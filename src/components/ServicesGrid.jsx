@@ -38,18 +38,18 @@ export default function ServicesGrid({ onSelectService }) {
   const [hoveredCard, setHoveredCard] = useState(null);
 
   return (
-    <section className="w-full bg-[#110D0B] text-white py-14 sm:py-18 lg:py-20 my-10 sm:my-16 border-y border-[#1E1814]">
+    <section className="w-full bg-[#110D0B] text-white pt-8 pb-14 sm:pt-10 sm:pb-16 lg:pt-12 lg:pb-20 my-6 sm:my-10 border-y border-[#1E1814]">
       {/* Centered structured container matching the Levanto reference */}
       <div className="max-w-6xl mx-auto px-5 sm:px-8 lg:px-12">
         
         {/* Section Header matching Levanto Reference */}
-        <div className="mb-8 sm:mb-10">
+        <div className="mb-6 sm:mb-8">
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-40px' }}
             transition={{ duration: 0.4 }}
-            className="text-[11px] font-semibold tracking-[0.25em] uppercase text-[#C5A880] mb-2.5"
+            className="text-[11px] font-semibold tracking-[0.25em] uppercase text-[#C5A880] mb-2"
           >
             SERVICES
           </motion.div>
@@ -68,7 +68,7 @@ export default function ServicesGrid({ onSelectService }) {
         {/* 6-Card Architectural Grid with instant white hover on cursor movement */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-[#26201C] border border-[#26201C]">
           {SERVICES.map((item, index) => {
-            const isWhite = hoveredCard === index;
+            const isHovered = hoveredCard === index;
 
             return (
               <div
@@ -76,45 +76,25 @@ export default function ServicesGrid({ onSelectService }) {
                 onClick={() => {
                   if (onSelectService) onSelectService(item.title);
                 }}
-                onMouseEnter={() => setHoveredCard(index)}
-                onMouseMove={() => setHoveredCard(index)}
-                onMouseLeave={() => setHoveredCard(null)}
-                className={`group p-6 sm:p-7 lg:p-8 flex flex-col justify-between cursor-pointer transition-colors duration-200 relative select-none min-h-[180px] sm:min-h-[195px] lg:min-h-[205px] ${
-                  isWhite
-                    ? 'bg-white text-[#111111]'
-                    : 'bg-[#110D0B] text-white hover:bg-white hover:text-[#111111]'
+                onPointerEnter={() => setHoveredCard(index)}
+                onPointerMove={() => setHoveredCard(index)}
+                onPointerLeave={() => setHoveredCard(null)}
+                className={`service-card p-6 sm:p-7 lg:p-8 flex flex-col justify-between cursor-pointer relative select-none min-h-[180px] sm:min-h-[195px] lg:min-h-[205px] ${
+                  isHovered ? 'is-active-hover' : ''
                 }`}
               >
                 {/* Number */}
-                <div
-                  className={`text-[12px] font-mono tracking-widest font-medium mb-3 sm:mb-4 transition-colors duration-200 ${
-                    isWhite
-                      ? 'text-[#111111]'
-                      : 'text-[#C5A880] group-hover:text-[#111111]'
-                  }`}
-                >
+                <div className="service-num text-[12px] font-mono tracking-widest font-medium mb-3 sm:mb-4">
                   {item.number}
                 </div>
 
                 {/* Title & Description */}
                 <div className="flex-1 flex flex-col justify-start">
-                  <h3
-                    className={`font-serif text-[18px] sm:text-[20px] font-normal tracking-tight leading-snug mb-2 transition-colors duration-200 ${
-                      isWhite
-                        ? 'text-[#111111]'
-                        : 'text-[#F5F2EB] group-hover:text-[#111111]'
-                    }`}
-                  >
+                  <h3 className="service-title font-serif text-[18px] sm:text-[20px] font-normal tracking-tight leading-snug mb-2">
                     {item.title}
                   </h3>
 
-                  <p
-                    className={`text-[12px] sm:text-[12.5px] leading-relaxed font-light transition-colors duration-200 ${
-                      isWhite
-                        ? 'text-[#444444]'
-                        : 'text-[#9E9690] group-hover:text-[#444444]'
-                    }`}
-                  >
+                  <p className="service-desc text-[12px] sm:text-[12.5px] leading-relaxed font-light">
                     {item.description}
                   </p>
                 </div>

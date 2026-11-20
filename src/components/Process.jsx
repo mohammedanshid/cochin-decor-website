@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { PROCESS_STEPS } from '../data/curtainData';
 
 export default function Process() {
+  const [hoveredStep, setHoveredStep] = useState(null);
+
   return (
     <section id="process" className="py-20 sm:py-28 bg-[#FFFFFF] border-b border-[#EAEAEA]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -47,40 +49,49 @@ export default function Process() {
           {/* Thin connecting line for Desktop (Horizontal) */}
           <div className="hidden lg:block absolute top-[28px] left-[6%] right-[6%] h-[1px] bg-[#D4D4D2] z-0" />
 
-          {/* 4 Steps Grid with interactive black hover effect */}
+          {/* 4 Steps Grid with instant black hover effect on cursor movement */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-6 relative z-10">
-            {PROCESS_STEPS.map((step, index) => (
-              <motion.div
-                key={step.number}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.6, delay: index * 0.12 }}
-                className="group flex flex-col bg-white p-6 sm:p-7 border border-[#EAEAEA] relative cursor-pointer transition-all duration-300 hover:bg-[#111111] hover:border-[#111111] hover:shadow-2xl hover:-translate-y-1"
-              >
-                {/* Number Circle / Node */}
-                <div className="w-13 h-13 sm:w-14 sm:h-14 bg-[#111111] text-white group-hover:bg-white group-hover:text-[#111111] flex items-center justify-center font-mono text-sm tracking-wider mb-5 sm:mb-6 shrink-0 shadow-xs transition-colors duration-300">
-                  {step.number}
-                </div>
+            {PROCESS_STEPS.map((step, index) => {
+              const isHovered = hoveredStep === index;
 
-                <div className="text-[10px] uppercase tracking-[0.2em] text-[#666666] group-hover:text-[#C5A880] mb-1 font-semibold transition-colors duration-300">
-                  Step 0{index + 1}
-                </div>
+              return (
+                <motion.div
+                  key={step.number}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{ duration: 0.6, delay: index * 0.12 }}
+                  onPointerEnter={() => setHoveredStep(index)}
+                  onPointerMove={() => setHoveredStep(index)}
+                  onPointerLeave={() => setHoveredStep(null)}
+                  className={`process-card group flex flex-col p-6 sm:p-7 border relative cursor-pointer select-none ${
+                    isHovered ? 'is-active-hover' : ''
+                  }`}
+                >
+                  {/* Number Circle / Node */}
+                  <div className="process-num-badge w-13 h-13 sm:w-14 sm:h-14 bg-[#111111] text-white flex items-center justify-center font-mono text-sm tracking-wider mb-5 sm:mb-6 shrink-0 shadow-xs transition-colors duration-300">
+                    {step.number}
+                  </div>
 
-                <h3 className="font-serif text-lg sm:text-xl font-medium text-[#111111] group-hover:text-white mb-2 sm:mb-3 transition-colors duration-300">
-                  {step.title}
-                </h3>
+                  <div className="process-step-label text-[10px] uppercase tracking-[0.2em] text-[#666666] mb-1 font-semibold transition-colors duration-300">
+                    Step 0{index + 1}
+                  </div>
 
-                <p className="text-xs sm:text-sm text-[#555555] group-hover:text-[#D4CDC5] leading-relaxed mb-4 transition-colors duration-300">
-                  {step.description}
-                </p>
+                  <h3 className="process-title font-serif text-lg sm:text-xl font-medium text-[#111111] mb-2 sm:mb-3 transition-colors duration-300">
+                    {step.title}
+                  </h3>
 
-                <div className="mt-auto pt-3 border-t border-[#F0F0EE] group-hover:border-[#2D2622] text-[11px] text-[#888888] group-hover:text-[#A69E98] transition-colors duration-300">
-                  <span className="font-medium text-[#111111] group-hover:text-[#C5A880]">Outcome: </span>
-                  {step.deliverable}
-                </div>
-              </motion.div>
-            ))}
+                  <p className="process-desc text-xs sm:text-sm text-[#555555] leading-relaxed mb-4 transition-colors duration-300">
+                    {step.description}
+                  </p>
+
+                  <div className="process-divider mt-auto pt-3 border-t border-[#F0F0EE] text-[11px] text-[#888888] transition-colors duration-300">
+                    <span className="process-outcome-label font-medium text-[#111111]">Outcome: </span>
+                    {step.deliverable}
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
 
