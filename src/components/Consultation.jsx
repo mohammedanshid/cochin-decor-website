@@ -169,24 +169,24 @@ Please let me know your available times for an in-home fabric consultation in Ke
             </div>
           </div>
 
-          {/* Right Column: Premium Form */}
+          {/* Right Column: Compact Premium Form */}
           <div className="lg:col-span-7">
-            <div className="bg-[#F8F8F6] p-8 sm:p-10 border border-[#EAEAEA] shadow-sm">
+            <div className="bg-[#F8F8F6] p-5 sm:p-7 border border-[#EAEAEA] shadow-sm">
               
               {!submittedWhatsAppUrl ? (
-                <form onSubmit={handleSubmit} noValidate className="space-y-6">
-                  <div className="pb-2 border-b border-[#EAEAEA]">
-                    <h3 className="font-serif text-2xl text-[#111111] font-medium">
+                <form onSubmit={handleSubmit} noValidate className="space-y-3.5">
+                  <div className="pb-1.5 border-b border-[#EAEAEA]">
+                    <h3 className="font-serif text-xl sm:text-2xl text-[#111111] font-medium">
                       Book a Free Consultation
                     </h3>
-                    <p className="text-xs text-[#666666] mt-1">
+                    <p className="text-xs text-[#666666] mt-0.5">
                       Our specialist will connect with you on WhatsApp with fabric samples.
                     </p>
                   </div>
 
                   {/* Name field */}
                   <div>
-                    <label htmlFor="name" className="block text-xs uppercase tracking-wider text-[#111111] font-semibold mb-2">
+                    <label htmlFor="name" className="block text-xs uppercase tracking-wider text-[#111111] font-semibold mb-1">
                       Your Name <span className="text-red-600">*</span>
                     </label>
                     <input
@@ -196,12 +196,12 @@ Please let me know your available times for an in-home fabric consultation in Ke
                       value={formData.name}
                       onChange={handleChange}
                       placeholder="Enter your name"
-                      className={`w-full px-4 py-3.5 bg-white border ${
+                      className={`w-full px-3.5 py-2.5 bg-white border ${
                         errors.name ? 'border-red-500 ring-1 ring-red-500' : 'border-[#D4D4D2] focus:border-[#111111]'
                       } text-sm text-[#111111] placeholder-[#999999] focus:outline-none transition-colors`}
                     />
                     {errors.name && (
-                      <div className="flex items-center text-xs text-red-600 mt-1.5 space-x-1">
+                      <div className="flex items-center text-xs text-red-600 mt-1 space-x-1">
                         <AlertCircle className="w-3.5 h-3.5 shrink-0" />
                         <span>{errors.name}</span>
                       </div>
@@ -210,7 +210,7 @@ Please let me know your available times for an in-home fabric consultation in Ke
 
                   {/* Phone field */}
                   <div>
-                    <label htmlFor="phone" className="block text-xs uppercase tracking-wider text-[#111111] font-semibold mb-2">
+                    <label htmlFor="phone" className="block text-xs uppercase tracking-wider text-[#111111] font-semibold mb-1">
                       Phone Number <span className="text-red-600">*</span>
                     </label>
                     <input
@@ -220,12 +220,12 @@ Please let me know your available times for an in-home fabric consultation in Ke
                       value={formData.phone}
                       onChange={handleChange}
                       placeholder="Enter your phone number"
-                      className={`w-full px-4 py-3.5 bg-white border ${
+                      className={`w-full px-3.5 py-2.5 bg-white border ${
                         errors.phone ? 'border-red-500 ring-1 ring-red-500' : 'border-[#D4D4D2] focus:border-[#111111]'
                       } text-sm text-[#111111] placeholder-[#999999] focus:outline-none transition-colors`}
                     />
                     {errors.phone && (
-                      <div className="flex items-center text-xs text-red-600 mt-1.5 space-x-1">
+                      <div className="flex items-center text-xs text-red-600 mt-1 space-x-1">
                         <AlertCircle className="w-3.5 h-3.5 shrink-0" />
                         <span>{errors.phone}</span>
                       </div>
@@ -234,7 +234,7 @@ Please let me know your available times for an in-home fabric consultation in Ke
 
                   {/* Curtain Interest Selection */}
                   <div>
-                    <label htmlFor="stylePreference" className="block text-xs uppercase tracking-wider text-[#111111] font-semibold mb-2">
+                    <label htmlFor="stylePreference" className="block text-xs uppercase tracking-wider text-[#111111] font-semibold mb-1">
                       Curtain or Blind Preference
                     </label>
                     <select
@@ -242,7 +242,7 @@ Please let me know your available times for an in-home fabric consultation in Ke
                       name="stylePreference"
                       value={formData.stylePreference}
                       onChange={handleChange}
-                      className="w-full px-4 py-3.5 bg-white border border-[#D4D4D2] focus:border-[#111111] text-sm text-[#111111] focus:outline-none transition-colors cursor-pointer"
+                      className="w-full px-3.5 py-2.5 bg-white border border-[#D4D4D2] focus:border-[#111111] text-sm text-[#111111] focus:outline-none transition-colors cursor-pointer"
                     >
                       <option value="Sheer & Blackout Curtains">Sheer &amp; Blackout Curtains (Double Track)</option>
                       <option value="Wave Curtains">Wave Curtains (Architectural S-Fold)</option>
@@ -257,17 +257,17 @@ Please let me know your available times for an in-home fabric consultation in Ke
 
                   {/* City / Message field */}
                   <div>
-                    <label htmlFor="message" className="block text-xs uppercase tracking-wider text-[#111111] font-semibold mb-2">
+                    <label htmlFor="message" className="block text-xs uppercase tracking-wider text-[#111111] font-semibold mb-1">
                       City / Message
                     </label>
                     <textarea
                       id="message"
                       name="message"
-                      rows={3}
+                      rows={2}
                       value={formData.message}
                       onChange={handleChange}
-                      placeholder="Your city or a brief message (e.g., Kochi villa, 8 windows, need living room sheer curtains)"
-                      className="w-full px-4 py-3.5 bg-white border border-[#D4D4D2] focus:border-[#111111] text-sm text-[#111111] placeholder-[#999999] focus:outline-none transition-colors resize-none"
+                      placeholder="Your city or a brief message (e.g., Kochi villa, 8 windows)"
+                      className="w-full px-3.5 py-2 bg-white border border-[#D4D4D2] focus:border-[#111111] text-sm text-[#111111] placeholder-[#999999] focus:outline-none transition-colors resize-none"
                     />
                   </div>
 
@@ -276,12 +276,12 @@ Please let me know your available times for an in-home fabric consultation in Ke
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full py-4 bg-[#111111] text-white text-xs font-semibold tracking-[0.12em] uppercase hover:bg-neutral-800 transition-all duration-300 flex items-center justify-center space-x-2 shadow-md cursor-pointer disabled:opacity-50"
+                      className="w-full py-3 bg-[#111111] text-white text-xs font-semibold tracking-[0.12em] uppercase hover:bg-neutral-800 transition-all duration-300 flex items-center justify-center space-x-2 shadow-md cursor-pointer disabled:opacity-50"
                     >
                       <MessageSquare className="w-4 h-4" />
                       <span>Book Consultation</span>
                     </button>
-                    <div className="text-[11px] text-[#777777] text-center mt-3">
+                    <div className="text-[10px] text-[#777777] text-center mt-2">
                       Submitting initiates a secure direct enquiry to our WhatsApp hotline (+91 7902797037).
                     </div>
                   </div>

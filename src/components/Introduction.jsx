@@ -101,27 +101,27 @@ export default function Introduction() {
             </motion.p>
 
             {/* Minimal Hairline Divider */}
-            <div className="w-full h-[1px] bg-[#2D2622] mb-10 sm:mb-12" />
+            <div className="w-full h-[1px] bg-[#2D2622] mb-8 sm:mb-10" />
 
-            {/* Three Large Stat Columns with Animated Countdown / Countup */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-4">
+            {/* Three Stat Numbers in a Single Horizontal Row (not stacked in a column on mobile) */}
+            <div className="grid grid-cols-3 gap-2 sm:gap-6 pt-2">
               {stats.map((stat, idx) => (
                 <motion.div
                   key={idx}
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 15 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: '-30px' }}
-                  transition={{ duration: 0.6, delay: 0.3 + idx * 0.15 }}
+                  viewport={{ once: true, margin: '-20px' }}
+                  transition={{ duration: 0.5, delay: 0.2 + idx * 0.1 }}
                   className="flex flex-col"
                 >
-                  <div className="font-serif text-4xl sm:text-5xl md:text-[56px] font-normal text-[#C5A880] tracking-tight leading-none mb-2.5">
+                  <div className="font-serif text-2xl sm:text-4xl md:text-5xl font-normal text-[#C5A880] tracking-tight leading-none mb-1.5 sm:mb-2">
                     <AnimatedCounter
                       target={stat.target}
                       suffix={stat.suffix}
-                      duration={1600 + idx * 250}
+                      duration={1400 + idx * 200}
                     />
                   </div>
-                  <p className="text-xs sm:text-[13px] text-[#A69E98] leading-relaxed font-light max-w-[170px]">
+                  <p className="text-[10px] sm:text-xs md:text-[13px] text-[#A69E98] leading-tight sm:leading-relaxed font-light">
                     {stat.label}
                   </p>
                 </motion.div>

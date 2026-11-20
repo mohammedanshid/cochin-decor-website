@@ -35,13 +35,12 @@ const SERVICES = [
 ];
 
 export default function ServicesGrid({ onSelectService }) {
-  // Initially null so all columns start dark (no white card before user touches or hovers)
   const [hoveredCard, setHoveredCard] = useState(null);
 
   return (
-    <section className="w-full bg-[#110D0B] text-white py-16 sm:py-20 lg:py-24 my-14 sm:my-20 border-y border-[#1E1814]">
+    <section className="w-full bg-[#110D0B] text-white py-14 sm:py-18 lg:py-20 my-10 sm:my-16 border-y border-[#1E1814]">
       {/* Centered structured container matching the Levanto reference */}
-      <div className="max-w-6xl mx-auto px-6 sm:px-10 lg:px-12">
+      <div className="max-w-6xl mx-auto px-5 sm:px-8 lg:px-12">
         
         {/* Section Header matching Levanto Reference */}
         <div className="mb-8 sm:mb-10">
@@ -66,7 +65,7 @@ export default function ServicesGrid({ onSelectService }) {
           </motion.h2>
         </div>
 
-        {/* 6-Card Architectural Grid matching exact measurements from Levanto */}
+        {/* 6-Card Architectural Grid with instant white hover on cursor movement */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-[#26201C] border border-[#26201C]">
           {SERVICES.map((item, index) => {
             const isWhite = hoveredCard === index;
@@ -78,16 +77,12 @@ export default function ServicesGrid({ onSelectService }) {
                   if (onSelectService) onSelectService(item.title);
                 }}
                 onMouseEnter={() => setHoveredCard(index)}
+                onMouseMove={() => setHoveredCard(index)}
                 onMouseLeave={() => setHoveredCard(null)}
-                onTouchStart={() => setHoveredCard(index)}
-                onTouchEnd={() => {
-                  // Keep briefly or allow tap to select
-                  setTimeout(() => setHoveredCard(null), 1500);
-                }}
                 className={`group p-6 sm:p-7 lg:p-8 flex flex-col justify-between cursor-pointer transition-colors duration-200 relative select-none min-h-[180px] sm:min-h-[195px] lg:min-h-[205px] ${
                   isWhite
                     ? 'bg-white text-[#111111]'
-                    : 'bg-[#110D0B] text-white hover:bg-white'
+                    : 'bg-[#110D0B] text-white hover:bg-white hover:text-[#111111]'
                 }`}
               >
                 {/* Number */}
