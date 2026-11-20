@@ -41,6 +41,14 @@ export default function Hero({ onLoadingProgress, onLoadingComplete, onBookConsu
   const currentFrameRef = useRef(0);
   const isInitialDrawDoneRef = useRef(false);
 
+  // Responsive device check for mobile vertical frames vs desktop landscape frames
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth < 768;
+    }
+    return false;
+  });
+
   // Keep callback refs stable to prevent unneeded effect restarts
   const onProgressRef = useRef(onLoadingProgress);
   const onCompleteRef = useRef(onLoadingComplete);
@@ -50,11 +58,30 @@ export default function Hero({ onLoadingProgress, onLoadingComplete, onBookConsu
     onCompleteRef.current = onLoadingComplete;
   }, [onLoadingProgress, onLoadingComplete]);
 
-  // Helper to get image path (optimized WebP)
-  const getFrameUrl = (index) => {
+  // Handle window resize between mobile and desktop
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth < 768;
+      setIsMobile((prev) => {
+        if (prev !== mobile) {
+          isInitialDrawDoneRef.current = false;
+          return mobile;
+        }
+        return prev;
+      });
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Helper to get image path (mobile vertical 1080x1920 vs desktop 1920x1080)
+  const getFrameUrl = useCallback((index, mobileMode) => {
     const pad = String(index).padStart(3, '0');
+    if (mobileMode) {
+      return `/images/mobile-optimized/frame_${pad}.webp`;
+    }
     return `/images/optimized/frame_${pad}.webp`;
-  };
+  }, []);
 
   // Helper to draw image cover onto canvas with proper devicePixelRatio
   const drawFrame = useCallback((img) => {
@@ -108,7 +135,7 @@ export default function Hero({ onLoadingProgress, onLoadingComplete, onBookConsu
 
     // Load first frame immediately for instant first paint
     const firstImg = new Image();
-    firstImg.src = getFrameUrl(0);
+    firstImg.src = getFrameUrl(0, isMobile);
     firstImg.onload = () => {
       if (isCancelled) return;
       images[0] = firstImg;
@@ -121,7 +148,7 @@ export default function Hero({ onLoadingProgress, onLoadingComplete, onBookConsu
     // Load all frames and track progress
     for (let i = 0; i < TOTAL_FRAMES; i++) {
       const img = new Image();
-      img.src = getFrameUrl(i);
+      img.src = getFrameUrl(i, isMobile);
       img.onload = () => {
         if (isCancelled) return;
         loadedCount++;
@@ -151,7 +178,7 @@ export default function Hero({ onLoadingProgress, onLoadingComplete, onBookConsu
     return () => {
       isCancelled = true;
     };
-  }, [drawFrame]);
+  }, [drawFrame, getFrameUrl, isMobile]);
 
   // Handle scroll and frame mapping
   useEffect(() => {
@@ -225,7 +252,7 @@ export default function Hero({ onLoadingProgress, onLoadingComplete, onBookConsu
   return (
     <div ref={containerRef} id="home" className="relative h-[340vh] bg-[#111111]">
       {/* Sticky Fullscreen Canvas Viewport */}
-      <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-end">
+      <div className="sticky top-0 h-screen md:h-screen min-h-[100dvh] w-full overflow-hidden flex flex-col justify-end">
         
         {/* Render Canvas */}
         <canvas
@@ -233,8 +260,8 @@ export default function Hero({ onLoadingProgress, onLoadingComplete, onBookConsu
           className="absolute inset-0 w-full h-full object-cover z-0"
         />
 
-        {/* Bottom Section: Placed down at the bottom like Image 3 */}
-        <div className="relative z-10 w-full px-6 sm:px-12 md:px-16 lg:px-20 max-w-7xl mx-auto pb-4 sm:pb-6">
+        {/* Bottom Section: Positioned with clean responsive padding */}
+        <div className="relative z-10 w-full px-5 sm:px-12 md:px-16 lg:px-20 max-w-7xl mx-auto pb-4 sm:pb-6">
           <div className="max-w-xl">
             <AnimatePresence mode="wait">
               {isTextVisible && currentStageData && (
@@ -244,27 +271,27 @@ export default function Hero({ onLoadingProgress, onLoadingComplete, onBookConsu
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -12 }}
                   transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                  className="space-y-2.5 sm:space-y-3"
+                  className="space-y-1.5 sm:space-y-3"
                 >
                   {/* Eyebrow - Small uppercase */}
-                  <div className="text-[10px] sm:text-[11px] font-normal tracking-[0.24em] uppercase text-[#7A2828]">
+                  <div className="text-[9px] sm:text-[11px] font-normal tracking-[0.24em] uppercase text-[#7A2828]">
                     {currentStageData.eyebrowText}
                   </div>
 
                   {/* Heading - Slender font thickness (font-normal), Line 1 Black (no white shadow), Line 2 White */}
-                  <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl lg:text-[66px] font-normal tracking-[-0.025em] leading-[1.04]">
+                  <h1 className="font-serif text-2xl sm:text-5xl md:text-6xl lg:text-[66px] font-normal tracking-[-0.025em] leading-[1.08]">
                     {/* First line: Black font, NO white shadow */}
                     <span className="block text-[#111111] font-normal">
                       {currentStageData.titleLine1}
                     </span>
                     {/* Second line: White font */}
-                    <span className="block text-white font-normal italic drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
+                    <span className="block text-white font-normal italic drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]">
                       {currentStageData.titleLine2}
                     </span>
                   </h1>
 
                   {/* Description - Slender, natural sans-serif */}
-                  <p className="text-xs sm:text-sm md:text-base text-[#222222] max-w-md leading-relaxed font-normal pt-0.5">
+                  <p className="text-[11px] sm:text-sm md:text-base text-[#222222] max-w-md leading-relaxed font-normal pt-0.5">
                     {currentStageData.description}
                   </p>
                 </motion.div>
@@ -273,7 +300,7 @@ export default function Hero({ onLoadingProgress, onLoadingComplete, onBookConsu
           </div>
         </div>
 
-        {/* Bottom Centered Prompt — Matching Image 3: "WATCH THE ROOM COME TOGETHER" */}
+        {/* Bottom Centered Prompt: "WATCH THE ROOM COME TOGETHER" */}
         <div className="relative z-10 pb-5 sm:pb-6 text-center pointer-events-none">
           <AnimatePresence mode="wait">
             <motion.div

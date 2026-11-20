@@ -29,3 +29,6 @@ dist-ssr
 public/images/*.png
 sample_*.jpg
 test_*.jpg
+
+# Raw mobile frames
+public/mobile images/
