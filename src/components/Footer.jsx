@@ -72,9 +72,11 @@ export default function Footer({ onBookConsultation }) {
           
           {/* Brand Info */}
           <div className="lg:col-span-5 space-y-4">
-            <div className="font-serif text-2xl font-bold tracking-[0.18em] text-white uppercase">
-              {BRAND.name}
-            </div>
+            <img
+              src="/logo-white.png"
+              alt="Cochin Decor"
+              className="h-14 sm:h-16 w-auto object-contain mb-2"
+            />
             <p className="text-sm text-[#AAAAAA] leading-relaxed max-w-sm">
               Bespoke curtains, premium fabrics, and custom window solutions across Kerala.
             </p>

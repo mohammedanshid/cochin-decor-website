@@ -49,18 +49,17 @@ export default function Navbar({ onBookConsultation }) {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
-            {/* Brand Logo / Name */}
+            {/* Brand Logo */}
             <a
               href="#home"
               onClick={(e) => handleNavClick(e, '#home')}
-              className="group flex flex-col"
+              className="group flex items-center"
             >
-              <span className="font-serif text-xl sm:text-2xl font-bold tracking-[0.18em] text-[#111111] uppercase transition-colors group-hover:text-black">
-                {BRAND.name}
-              </span>
-              <span className="text-[9px] uppercase tracking-[0.25em] text-[#666666] font-sans -mt-0.5">
-                Kerala • Window Furnishings
-              </span>
+              <img
+                src="/logo-black.png"
+                alt="Cochin Decor"
+                className="h-9 sm:h-11 w-auto object-contain transition-transform group-hover:scale-105"
+              />
             </a>
 
             {/* Desktop Navigation */}

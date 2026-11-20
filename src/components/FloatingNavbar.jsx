@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
-import { BRAND } from '../data/curtainData';
 
 export default function FloatingNavbar({ onBookConsultation }) {
   const [isScrolledPastHero, setIsScrolledPastHero] = useState(false);
@@ -52,18 +51,17 @@ export default function FloatingNavbar({ onBookConsultation }) {
       >
         <div className="max-w-7xl mx-auto px-6 sm:px-10 flex items-center justify-between">
           
-          {/* Logo on Left - Minimalist Frosted Capsule matching reference */}
+          {/* Logo on Left - Official Cochin Decor Logo */}
           <a
             href="#home"
             onClick={(e) => handleNavClick(e, '#home')}
-            className="pointer-events-auto group flex flex-col items-start px-4 py-1.5 rounded-2xl bg-white/75 backdrop-blur-md border border-neutral-200/80 shadow-xs hover:bg-white transition-all"
+            className="pointer-events-auto group flex items-center px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-2xl bg-white/80 backdrop-blur-md border border-neutral-200/80 shadow-xs hover:bg-white transition-all"
           >
-            <span className="font-serif text-xl sm:text-2xl tracking-[0.18em] font-bold uppercase text-[#111111]">
-              {BRAND.name}
-            </span>
-            <span className="text-[9px] tracking-[0.25em] uppercase font-sans font-medium text-[#555555] -mt-0.5">
-              CURTAIN ATELIER · KERALA
-            </span>
+            <img
+              src="/logo-black.png"
+              alt="Cochin Decor"
+              className="h-8 sm:h-10 w-auto object-contain transition-transform group-hover:scale-105"
+            />
           </a>
 
           {/* Desktop Capsule / Floating Pill on Right - Exactly matching reference */}
