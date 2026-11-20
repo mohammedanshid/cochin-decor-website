@@ -7,6 +7,7 @@ import CurtainModal from './CurtainModal';
 
 export default function CurtainCollection({ onEnquireStyle, onNavigateToCollection }) {
   const [selectedCurtain, setSelectedCurtain] = useState(null);
+  const [hoveredCard, setHoveredCard] = useState(null);
 
   // Show exactly 4 featured cards on the homepage matching reference (Image 3)
   const featuredCurtains = CURTAIN_COLLECTIONS.slice(0, 4);
@@ -61,52 +62,66 @@ export default function CurtainCollection({ onEnquireStyle, onNavigateToCollecti
         {/* 
           EXACTLY FOUR RECTANGULAR CARDS (matching Image 3 layout)
           2-column on mobile, 4-column on desktop with sharp architectural edges
+          Featuring instant black hover on cursor movement or hand touch without click
         */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
-          {featuredCurtains.map((curtain, index) => (
-            <motion.div
-              key={curtain.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-40px' }}
-              transition={{ duration: 0.5, delay: index * 0.08 }}
-              onClick={() => handleCardClick(curtain)}
-              className="group cursor-pointer flex flex-col bg-white border border-[#EAEAEA] hover:border-[#111111] transition-all duration-300 hover:shadow-xl"
-            >
-              {/* Image Container with Consistent Aspect Ratio */}
-              <div className="relative aspect-[4/3] sm:aspect-[3/4] w-full overflow-hidden bg-[#F0F0EE]">
-                <img
-                  src={curtain.image}
-                  alt={curtain.title}
-                  className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
-                  loading="lazy"
-                />
-                
-                {/* Badge Number */}
-                <div className="absolute top-2 left-2 sm:top-3 sm:left-3 bg-white/95 backdrop-blur-xs px-2 py-0.5 text-[9px] sm:text-[10px] font-mono tracking-widest text-[#111111] border border-[#EAEAEA]">
-                  0{index + 1}
-                </div>
-              </div>
+          {featuredCurtains.map((curtain, index) => {
+            const isHovered = hoveredCard === index;
 
-              {/* Text Container Below Photograph */}
-              <div className="p-3.5 sm:p-5 flex flex-col flex-grow justify-between">
-                <div>
-                  <h3 className="font-serif text-sm sm:text-lg font-medium tracking-tight text-[#111111] group-hover:underline underline-offset-2 decoration-1 line-clamp-1">
-                    {curtain.title}
-                  </h3>
+            return (
+              <motion.div
+                key={curtain.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-40px' }}
+                transition={{ duration: 0.5, delay: index * 0.08 }}
+                onClick={() => handleCardClick(curtain)}
+                onMouseEnter={() => setHoveredCard(index)}
+                onMouseMove={() => setHoveredCard(index)}
+                onMouseLeave={() => setHoveredCard(null)}
+                onPointerEnter={() => setHoveredCard(index)}
+                onPointerMove={() => setHoveredCard(index)}
+                onPointerLeave={() => setHoveredCard(null)}
+                onTouchStart={() => setHoveredCard(index)}
+                className={`curtain-card group cursor-pointer flex flex-col border select-none ${
+                  isHovered ? 'is-active-hover' : ''
+                }`}
+              >
+                {/* Image Container with Consistent Aspect Ratio */}
+                <div className="relative aspect-[4/3] sm:aspect-[3/4] w-full overflow-hidden bg-[#F0F0EE]">
+                  <img
+                    src={curtain.image}
+                    alt={curtain.title}
+                    className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
+                    loading="lazy"
+                  />
                   
-                  <p className="text-[11px] sm:text-xs text-[#666666] leading-relaxed line-clamp-2 mt-1">
-                    {curtain.description}
-                  </p>
+                  {/* Badge Number */}
+                  <div className="curtain-card-badge absolute top-2 left-2 sm:top-3 sm:left-3 px-2 py-0.5 text-[9px] sm:text-[10px] font-mono tracking-widest border">
+                    0{index + 1}
+                  </div>
                 </div>
 
-                <div className="mt-3 pt-2 sm:pt-3 border-t border-[#F0F0EE] flex items-center justify-between text-[10px] sm:text-[11px] uppercase tracking-wider text-[#111111] font-semibold">
-                  <span>Explore Style</span>
-                  <span className="text-[#888888] group-hover:translate-x-1 transition-transform">&rarr;</span>
+                {/* Text Container Below Photograph */}
+                <div className="curtain-card-body p-3.5 sm:p-5 flex flex-col flex-grow justify-between">
+                  <div>
+                    <h3 className="curtain-card-title font-serif text-sm sm:text-lg font-medium tracking-tight line-clamp-1">
+                      {curtain.title}
+                    </h3>
+                    
+                    <p className="curtain-card-desc text-[11px] sm:text-xs leading-relaxed line-clamp-2 mt-1">
+                      {curtain.description}
+                    </p>
+                  </div>
+
+                  <div className="curtain-card-divider mt-3 pt-2 sm:pt-3 border-t flex items-center justify-between text-[10px] sm:text-[11px] uppercase tracking-wider font-semibold">
+                    <span className="curtain-card-action">Explore Style</span>
+                    <span className="curtain-card-arrow inline-block">&rarr;</span>
+                  </div>
                 </div>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            );
+          })}
         </div>
 
         {/* EXPLORE MORE BUTTON UNDER THE FOUR CARDS (Requested by user) */}

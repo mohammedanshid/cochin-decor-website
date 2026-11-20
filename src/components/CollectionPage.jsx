@@ -9,6 +9,7 @@ import Footer from './Footer';
 export default function CollectionPage({ onBackToHome, onEnquireStyle }) {
   const [activeFilter, setActiveFilter] = useState('ALL');
   const [selectedCurtain, setSelectedCurtain] = useState(null);
+  const [hoveredCard, setHoveredCard] = useState(null);
 
   // Scroll to top upon entering the collection page
   useEffect(() => {
@@ -109,60 +110,73 @@ export default function CollectionPage({ onBackToHome, onEnquireStyle }) {
 
         {/* Full Grid of Curtain Cards (4 columns desktop, 2 columns mobile) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-          {filteredCollections.map((curtain, index) => (
-            <motion.div
-              key={curtain.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.05 }}
-              onClick={() => setSelectedCurtain(curtain)}
-              className="group cursor-pointer flex flex-col bg-white border border-[#EAEAEA] transition-all duration-300 hover:shadow-xl hover:border-[#111111]"
-            >
-              {/* Image Container with Consistent Aspect Ratio */}
-              <div className="relative aspect-[3/4] w-full overflow-hidden bg-[#F0F0EE]">
-                <img
-                  src={curtain.image}
-                  alt={curtain.title}
-                  className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
-                  loading="lazy"
-                />
-                
-                {/* Subtle Hover Overlay */}
-                <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                  <span className="inline-flex items-center px-4 py-2 bg-white/95 text-[#111111] text-xs uppercase tracking-widest font-medium shadow-md space-x-1.5">
-                    <Eye className="w-3.5 h-3.5" />
-                    <span>View Details</span>
-                  </span>
-                </div>
+          {filteredCollections.map((curtain, index) => {
+            const isHovered = hoveredCard === index;
 
-                {/* Badge / Category index */}
-                <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-xs px-2.5 py-1 text-[10px] font-mono tracking-widest text-[#111111] border border-[#EAEAEA]">
-                  0{index + 1}
-                </div>
-              </div>
-
-              {/* Text Container Below Photograph */}
-              <div className="p-5 sm:p-6 flex flex-col flex-grow justify-between">
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-serif text-lg sm:text-xl font-medium tracking-tight text-[#111111] group-hover:underline underline-offset-4 decoration-1">
-                      {curtain.title}
-                    </h3>
-                    <ArrowUpRight className="w-4 h-4 text-[#111111] opacity-0 group-hover:opacity-100 transition-opacity shrink-0 ml-1" />
-                  </div>
+            return (
+              <motion.div
+                key={curtain.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.05 }}
+                onClick={() => setSelectedCurtain(curtain)}
+                onMouseEnter={() => setHoveredCard(index)}
+                onMouseMove={() => setHoveredCard(index)}
+                onMouseLeave={() => setHoveredCard(null)}
+                onPointerEnter={() => setHoveredCard(index)}
+                onPointerMove={() => setHoveredCard(index)}
+                onPointerLeave={() => setHoveredCard(null)}
+                onTouchStart={() => setHoveredCard(index)}
+                className={`curtain-card group cursor-pointer flex flex-col border select-none ${
+                  isHovered ? 'is-active-hover' : ''
+                }`}
+              >
+                {/* Image Container with Consistent Aspect Ratio */}
+                <div className="relative aspect-[3/4] w-full overflow-hidden bg-[#F0F0EE]">
+                  <img
+                    src={curtain.image}
+                    alt={curtain.title}
+                    className="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
+                    loading="lazy"
+                  />
                   
-                  <p className="text-xs sm:text-[13px] text-[#666666] leading-relaxed line-clamp-3">
-                    {curtain.description}
-                  </p>
+                  {/* Subtle Hover Overlay */}
+                  <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                    <span className="inline-flex items-center px-4 py-2 bg-white/95 text-[#111111] text-xs uppercase tracking-widest font-medium shadow-md space-x-1.5">
+                      <Eye className="w-3.5 h-3.5" />
+                      <span>View Details</span>
+                    </span>
+                  </div>
+
+                  {/* Badge / Category index */}
+                  <div className="curtain-card-badge absolute top-3 left-3 px-2.5 py-1 text-[10px] font-mono tracking-widest border">
+                    0{index + 1}
+                  </div>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-[#F0F0EE] flex items-center justify-between text-[11px] uppercase tracking-wider text-[#111111] font-semibold">
-                  <span>Explore Style</span>
-                  <span className="text-[#888888]">&rarr;</span>
+                {/* Text Container Below Photograph */}
+                <div className="curtain-card-body p-5 sm:p-6 flex flex-col flex-grow justify-between">
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="curtain-card-title font-serif text-lg sm:text-xl font-medium tracking-tight">
+                        {curtain.title}
+                      </h3>
+                      <ArrowUpRight className="curtain-card-arrow w-4 h-4 shrink-0 ml-1" />
+                    </div>
+                    
+                    <p className="curtain-card-desc text-xs sm:text-[13px] leading-relaxed line-clamp-3">
+                      {curtain.description}
+                    </p>
+                  </div>
+
+                  <div className="curtain-card-divider mt-4 pt-3 border-t flex items-center justify-between text-[11px] uppercase tracking-wider font-semibold">
+                    <span className="curtain-card-action">Explore Style</span>
+                    <span className="curtain-card-arrow">&rarr;</span>
+                  </div>
                 </div>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            );
+          })}
         </div>
 
         {/* Bottom Consultation Banner */}

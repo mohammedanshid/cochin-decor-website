@@ -135,3 +135,79 @@
 .process-card.is-active-hover .process-outcome-label {
   color: #C5A880 !important;
 }
+
+/* Bulletproof black hover state for Curtain Collection (CurtainCollection.jsx & CollectionPage.jsx) */
+.curtain-card {
+  background-color: #FFFFFF;
+  border-color: #EAEAEA;
+  transition: background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+}
+.curtain-card .curtain-card-body {
+  background-color: #FFFFFF;
+  transition: background-color 0.25s ease;
+}
+.curtain-card .curtain-card-title {
+  color: #111111;
+  transition: color 0.25s ease;
+}
+.curtain-card .curtain-card-desc {
+  color: #666666;
+  transition: color 0.25s ease;
+}
+.curtain-card .curtain-card-badge {
+  background-color: rgba(255, 255, 255, 0.95);
+  color: #111111;
+  border-color: #EAEAEA;
+  transition: all 0.25s ease;
+}
+.curtain-card .curtain-card-divider {
+  border-color: #F0F0EE;
+  transition: border-color 0.25s ease;
+}
+.curtain-card .curtain-card-action {
+  color: #111111;
+  transition: color 0.25s ease;
+}
+.curtain-card .curtain-card-arrow {
+  color: #888888;
+  transition: color 0.25s ease, transform 0.25s ease;
+}
+
+.curtain-card:hover,
+.curtain-card.is-active-hover {
+  background-color: #111111 !important;
+  border-color: #111111 !important;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35) !important;
+  transform: translateY(-4px);
+}
+.curtain-card:hover .curtain-card-body,
+.curtain-card.is-active-hover .curtain-card-body {
+  background-color: #111111 !important;
+}
+.curtain-card:hover .curtain-card-title,
+.curtain-card.is-active-hover .curtain-card-title {
+  color: #FFFFFF !important;
+}
+.curtain-card:hover .curtain-card-desc,
+.curtain-card.is-active-hover .curtain-card-desc {
+  color: #D4CDC5 !important;
+}
+.curtain-card:hover .curtain-card-badge,
+.curtain-card.is-active-hover .curtain-card-badge {
+  background-color: #111111 !important;
+  color: #C5A880 !important;
+  border-color: #332A22 !important;
+}
+.curtain-card:hover .curtain-card-divider,
+.curtain-card.is-active-hover .curtain-card-divider {
+  border-color: #2D2622 !important;
+}
+.curtain-card:hover .curtain-card-action,
+.curtain-card.is-active-hover .curtain-card-action {
+  color: #C5A880 !important;
+}
+.curtain-card:hover .curtain-card-arrow,
+.curtain-card.is-active-hover .curtain-card-arrow {
+  color: #C5A880 !important;
+  transform: translateX(4px) !important;
+}
