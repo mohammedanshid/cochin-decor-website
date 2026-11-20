@@ -91,6 +91,8 @@ export const BLINDS_SOLUTIONS = [
   {
     number: "01",
     title: "ROLLER & ZEBRA BLINDS",
+    category: "BLINDS",
+    shortSummary: "Zebra, Roller, Roman, Honeycomb, Venetian.",
     description: "Modern window blinds offering a stylish approach to privacy and precise light management.",
     details: "Alternating translucent and opaque horizontal bands allow you to transition effortlessly between filtered daylight and complete privacy with a gentle pull or tap.",
     image: "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?auto=format&fit=crop&w=1000&q=85",
@@ -99,6 +101,8 @@ export const BLINDS_SOLUTIONS = [
   {
     number: "02",
     title: "ROMAN & VENETIAN BLINDS",
+    category: "WOOD & FABRIC",
+    shortSummary: "Natural wood Venetian slats & artisanal Roman cascades.",
     description: "Elegant and functional window coverings designed to complement contemporary interiors.",
     details: "Classic horizontal soft fabric cascades in Roman blinds, alongside moisture-resistant aluminum and natural wood Venetian slats perfect for tropical Kerala living spaces.",
     image: "https://images.unsplash.com/photo-1616046229478-9901c5536a45?auto=format&fit=crop&w=1000&q=85",
@@ -107,10 +111,22 @@ export const BLINDS_SOLUTIONS = [
   {
     number: "03",
     title: "AUTOMATED CURTAIN SYSTEMS",
+    category: "AUTOMATION",
+    shortSummary: "Whisper-quiet motorized tracks with smart home integration.",
     description: "Experience convenient window control with modern motorized curtain systems.",
     details: "Whisper-quiet motorized tracks integrated with your smartphone, home automation (Alexa, Google Home, Apple HomeKit), or elegant wall remotes. Open your double-height curtains with ease.",
     image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=85",
     tag: "Smart Motorization"
+  },
+  {
+    number: "04",
+    title: "ARCHITECTURAL CURTAINS",
+    category: "CURTAINS",
+    shortSummary: "Cloth curtains & sheer voiles tailored for Kerala homes.",
+    description: "Bespoke drapery engineered with weighted corner hems for flawless drape.",
+    details: "Custom S-fold wave drapes and pinch pleats crafted from Belgian linens and multi-pass blackout fabrics, tailored to floor-to-ceiling architectural openings.",
+    image: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1000&q=85",
+    tag: "Bespoke Drapes"
   }
 ];
 
