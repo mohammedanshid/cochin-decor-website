@@ -34,9 +34,6 @@ function App() {
       if (window.location.pathname.startsWith('/collection')) {
         setCurrentView('collection');
       } else {
-        try {
-          sessionStorage.setItem('cochin_curtain_opened', 'true');
-        } catch {}
         setCurrentView('home');
         // When popping back from collection, redirect straight to #about to avoid redoing hero animation
         const scrollToAbout = () => {
@@ -59,18 +56,12 @@ function App() {
   }, []);
 
   const navigateToCollection = (_selectedId = null) => {
-    try {
-      sessionStorage.setItem('cochin_curtain_opened', 'true');
-    } catch {}
     window.history.pushState({}, '', '/collection');
     setCurrentView('collection');
     window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
   const navigateToHome = (targetHash = '#about') => {
-    try {
-      sessionStorage.setItem('cochin_curtain_opened', 'true');
-    } catch {}
     window.history.pushState({}, '', '/');
     setCurrentView('home');
     if (targetHash) {

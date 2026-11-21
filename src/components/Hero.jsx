@@ -34,13 +34,12 @@ const ACTIVE_STAGES = [
 ];
 
 export default function Hero({ onLoadingProgress, onLoadingComplete, onBookConsultation: _onBookConsultation }) {
-  const isAlreadyOpened = typeof window !== 'undefined' && sessionStorage.getItem('cochin_curtain_opened') === 'true';
-
   const containerRef = useRef(null);
   const canvasRef = useRef(null);
   const imagesRef = useRef([]);
-  const [scrollProgress, setScrollProgress] = useState(isAlreadyOpened ? 1 : 0);
-  const currentFrameRef = useRef(isAlreadyOpened ? TOTAL_FRAMES - 1 : 0);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const currentFrameRef = useRef(0);
+  const lastDrawnFrameRef = useRef(-1);
   const isInitialDrawDoneRef = useRef(false);
 
   // Responsive device check for mobile vertical frames vs desktop landscape frames
@@ -67,6 +66,7 @@ export default function Hero({ onLoadingProgress, onLoadingComplete, onBookConsu
       setIsMobile((prev) => {
         if (prev !== mobile) {
           isInitialDrawDoneRef.current = false;
+          lastDrawnFrameRef.current = -1;
           return mobile;
         }
         return prev;
@@ -94,12 +94,15 @@ export default function Hero({ onLoadingProgress, onLoadingComplete, onBookConsu
     if (!ctx) return;
 
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const displayWidth = canvas.clientWidth;
-    const displayHeight = canvas.clientHeight;
+    const displayWidth = canvas.clientWidth || window.innerWidth;
+    const displayHeight = canvas.clientHeight || window.innerHeight;
 
-    if (canvas.width !== displayWidth * dpr || canvas.height !== displayHeight * dpr) {
-      canvas.width = displayWidth * dpr;
-      canvas.height = displayHeight * dpr;
+    const targetWidth = Math.round(displayWidth * dpr);
+    const targetHeight = Math.round(displayHeight * dpr);
+
+    if (canvas.width !== targetWidth || canvas.height !== targetHeight) {
+      canvas.width = targetWidth;
+      canvas.height = targetHeight;
     }
 
     ctx.save();
@@ -129,6 +132,36 @@ export default function Hero({ onLoadingProgress, onLoadingComplete, onBookConsu
     ctx.restore();
   }, []);
 
+  // Helper to render the closest available loaded frame to targetIndex
+  const renderBestFrame = useCallback((targetIndex) => {
+    const images = imagesRef.current;
+    if (!images || images.length === 0) return;
+
+    // Check exact target frame
+    const exact = images[targetIndex];
+    if (exact && exact.complete && exact.naturalWidth > 0) {
+      drawFrame(exact);
+      lastDrawnFrameRef.current = targetIndex;
+      return;
+    }
+
+    // Search outwards for closest loaded frame (backward preferred)
+    for (let offset = 1; offset < TOTAL_FRAMES; offset++) {
+      const prev = targetIndex - offset;
+      if (prev >= 0 && images[prev]?.complete && images[prev]?.naturalWidth > 0) {
+        drawFrame(images[prev]);
+        lastDrawnFrameRef.current = prev;
+        return;
+      }
+      const next = targetIndex + offset;
+      if (next < TOTAL_FRAMES && images[next]?.complete && images[next]?.naturalWidth > 0) {
+        drawFrame(images[next]);
+        lastDrawnFrameRef.current = next;
+        return;
+      }
+    }
+  }, [drawFrame]);
+
   // Preload frames once with stable callbacks
   useEffect(() => {
     let isCancelled = false;
@@ -136,7 +169,7 @@ export default function Hero({ onLoadingProgress, onLoadingComplete, onBookConsu
     let loadedCount = 0;
 
     // Load initial frame immediately for instant first paint
-    const initFrameIdx = isAlreadyOpened ? (TOTAL_FRAMES - 1) : 0;
+    const initFrameIdx = 0;
     const initialImg = new Image();
     initialImg.src = getFrameUrl(initFrameIdx, isMobile);
     initialImg.onload = () => {
@@ -145,6 +178,7 @@ export default function Hero({ onLoadingProgress, onLoadingComplete, onBookConsu
       if (!isInitialDrawDoneRef.current) {
         drawFrame(initialImg);
         isInitialDrawDoneRef.current = true;
+        lastDrawnFrameRef.current = initFrameIdx;
       }
     };
 
@@ -162,8 +196,13 @@ export default function Hero({ onLoadingProgress, onLoadingComplete, onBookConsu
           if (onCompleteRef.current) onCompleteRef.current();
         }
 
-        if (i === currentFrameRef.current) {
+        // If this image is closer to the current requested frame than what is on canvas, draw it
+        const currentTarget = currentFrameRef.current;
+        const currentDist = Math.abs(currentTarget - lastDrawnFrameRef.current);
+        const newDist = Math.abs(currentTarget - i);
+        if (newDist < currentDist || lastDrawnFrameRef.current === -1) {
           drawFrame(img);
+          lastDrawnFrameRef.current = i;
         }
       };
       img.onerror = () => {
@@ -181,15 +220,13 @@ export default function Hero({ onLoadingProgress, onLoadingComplete, onBookConsu
     return () => {
       isCancelled = true;
     };
-  }, [drawFrame, getFrameUrl, isMobile, isAlreadyOpened]);
+  }, [drawFrame, getFrameUrl, isMobile]);
 
   // Handle scroll and frame mapping
   useEffect(() => {
     let ticking = false;
 
     const handleScroll = () => {
-      if (isAlreadyOpened) return;
-
       if (!ticking) {
         requestAnimationFrame(() => {
           const container = containerRef.current;
@@ -199,18 +236,11 @@ export default function Hero({ onLoadingProgress, onLoadingComplete, onBookConsu
           }
 
           const rect = container.getBoundingClientRect();
-          const totalScrollable = rect.height - window.innerHeight;
-          const currentScrolled = -rect.top;
+          const totalScrollable = Math.max(1, rect.height - window.innerHeight);
+          const currentScrolled = Math.max(0, -rect.top);
 
           let progress = currentScrolled / totalScrollable;
-          progress = Math.max(0, Math.min(1, progress));
-
-          // Mark curtain as opened once user scrolls past 75%
-          if (progress >= 0.75) {
-            try {
-              sessionStorage.setItem('cochin_curtain_opened', 'true');
-            } catch {}
-          }
+          progress = Math.max(0, Math.min(1, Number.isFinite(progress) ? progress : 0));
 
           setScrollProgress(progress);
 
@@ -222,10 +252,7 @@ export default function Hero({ onLoadingProgress, onLoadingComplete, onBookConsu
 
           if (frameIndex !== currentFrameRef.current) {
             currentFrameRef.current = frameIndex;
-            const img = imagesRef.current[frameIndex];
-            if (img && img.complete) {
-              drawFrame(img);
-            }
+            renderBestFrame(frameIndex);
           }
 
           ticking = false;
@@ -235,18 +262,19 @@ export default function Hero({ onLoadingProgress, onLoadingComplete, onBookConsu
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    window.addEventListener('resize', () => {
-      const img = imagesRef.current[currentFrameRef.current];
-      if (img) drawFrame(img);
-    });
+    const handleWindowResize = () => {
+      renderBestFrame(currentFrameRef.current);
+    };
+    window.addEventListener('resize', handleWindowResize);
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleWindowResize);
     };
-  }, [drawFrame, isAlreadyOpened]);
+  }, [renderBestFrame]);
 
-  // Determine which active text stage to show (only between 0.12 and 0.84 on initial scrub)
-  const isTextVisible = !isAlreadyOpened && scrollProgress >= 0.12 && scrollProgress <= 0.84;
+  // Determine which active text stage to show (only between 0.12 and 0.84 on scrub)
+  const isTextVisible = scrollProgress >= 0.12 && scrollProgress <= 0.84;
   
   let currentStageIndex = -1;
   if (isTextVisible) {
@@ -262,14 +290,18 @@ export default function Hero({ onLoadingProgress, onLoadingComplete, onBookConsu
   const currentStageData = currentStageIndex >= 0 ? ACTIVE_STAGES[currentStageIndex] : null;
 
   return (
-    <div ref={containerRef} id="home" className={`relative ${isAlreadyOpened ? 'h-screen' : 'h-[340vh]'} bg-[#111111]`}>
+    <div
+      ref={containerRef}
+      id="home"
+      className="relative h-[280vh] md:h-[340vh] bg-[#111111]"
+    >
       {/* Sticky Fullscreen Canvas Viewport */}
-      <div className="sticky top-0 h-screen md:h-screen min-h-[100dvh] w-full overflow-hidden flex flex-col justify-end">
+      <div className="sticky top-0 h-screen h-[100dvh] w-full overflow-hidden flex flex-col justify-end">
         
         {/* Render Canvas */}
         <canvas
           ref={canvasRef}
-          className="absolute inset-0 w-full h-full object-cover z-0"
+          className="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none"
         />
 
         {/* Bottom Section: Positioned with clean responsive padding */}
@@ -312,11 +344,11 @@ export default function Hero({ onLoadingProgress, onLoadingComplete, onBookConsu
           </div>
         </div>
 
-        {/* Bottom Centered Prompt: "COCHIN DECOR ATELIER" */}
+        {/* Bottom Centered Prompt */}
         <div className="relative z-10 pb-5 sm:pb-6 text-center pointer-events-none">
           <AnimatePresence mode="wait">
             <motion.div
-              key={scrollProgress < 0.12 && !isAlreadyOpened ? 'curtain' : scrollProgress > 0.84 || isAlreadyOpened ? 'atelier' : 'transform'}
+              key={scrollProgress < 0.12 ? 'curtain' : scrollProgress > 0.84 ? 'atelier' : 'transform'}
               initial={{ opacity: 0, y: 4 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -4 }}
@@ -325,12 +357,12 @@ export default function Hero({ onLoadingProgress, onLoadingComplete, onBookConsu
             >
               <span
                 className={`text-[9px] sm:text-[10px] font-medium tracking-[0.28em] uppercase font-sans transition-colors ${
-                  scrollProgress < 0.12 && !isAlreadyOpened ? 'text-white/80' : scrollProgress > 0.84 || isAlreadyOpened ? 'text-white/80' : 'text-[#111111]/80'
+                  scrollProgress < 0.12 ? 'text-white/80' : scrollProgress > 0.84 ? 'text-white/80' : 'text-[#111111]/80'
                 }`}
               >
-                {scrollProgress < 0.12 && !isAlreadyOpened
+                {scrollProgress < 0.12
                   ? 'SCROLL TO OPEN CURTAIN'
-                  : scrollProgress > 0.84 || isAlreadyOpened
+                  : scrollProgress > 0.84
                   ? 'COCHIN DECOR ATELIER'
                   : 'WATCH THE ROOM COME TOGETHER'}
               </span>
@@ -341,7 +373,7 @@ export default function Hero({ onLoadingProgress, onLoadingComplete, onBookConsu
               >
                 <ChevronDown
                   className={`w-3.5 h-3.5 ${
-                    scrollProgress < 0.12 && !isAlreadyOpened ? 'text-white/70' : scrollProgress > 0.84 || isAlreadyOpened ? 'text-white/70' : 'text-[#111111]/70'
+                    scrollProgress < 0.12 ? 'text-white/70' : scrollProgress > 0.84 ? 'text-white/70' : 'text-[#111111]/70'
                   }`}
                 />
               </motion.div>
@@ -350,14 +382,12 @@ export default function Hero({ onLoadingProgress, onLoadingComplete, onBookConsu
         </div>
 
         {/* Minimal Scroll Progress Bar at Bottom of Hero */}
-        {!isAlreadyOpened && (
-          <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-black/10 z-20">
-            <div
-              className="h-full bg-[#111111] transition-all duration-75"
-              style={{ width: `${scrollProgress * 100}%` }}
-            />
-          </div>
-        )}
+        <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-black/10 z-20">
+          <div
+            className="h-full bg-[#111111] transition-all duration-75"
+            style={{ width: `${scrollProgress * 100}%` }}
+          />
+        </div>
 
       </div>
     </div>
