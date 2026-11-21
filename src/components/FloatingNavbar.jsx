@@ -23,8 +23,8 @@ export default function FloatingNavbar({ onBookConsultation }) {
   const navLinks = [
     { name: 'Curtains', href: '#curtains' },
     { name: 'Blinds', href: '#blinds' },
-    { name: 'Why Us', href: '#why-us' },
     { name: 'Process', href: '#process' },
+    { name: 'FAQ', href: '#faq' },
   ];
 
   const handleNavClick = (e, href) => {

@@ -14,7 +14,7 @@ export default function Footer({ onBookConsultation }) {
     { name: 'Home', href: '#home' },
     { name: 'Curtain Collection', href: '#curtains' },
     { name: 'Blinds', href: '#blinds' },
-    { name: 'Our Advantage', href: '#why-us' },
+    { name: 'FAQ', href: '#faq' },
     { name: 'Contact', href: '#contact' },
   ];
 

@@ -9,6 +9,8 @@ import ModernBlinds from './components/ModernBlinds';
 import WhyChooseUs from './components/WhyChooseUs';
 import VisualExperience from './components/VisualExperience';
 import Process from './components/Process';
+import Testimonials from './components/Testimonials';
+import FAQ from './components/FAQ';
 import Consultation from './components/Consultation';
 import Footer from './components/Footer';
 import FloatingWhatsApp from './components/FloatingWhatsApp';
@@ -198,6 +200,12 @@ function App() {
 
         {/* Our Simple 4-Step Process (Black Hover effect) */}
         <Process />
+
+        {/* Floating Testimonials Marquee Moving Left to Right */}
+        <Testimonials />
+
+        {/* Frequently Asked Questions (3 Key Questions) */}
+        <FAQ />
 
         {/* In-Home Consultation Booking Form with Direct WhatsApp Integration */}
         <Consultation ref={consultationRef} />
