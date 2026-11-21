@@ -29,6 +29,21 @@ function App() {
         setCurrentView('collection');
       } else {
         setCurrentView('home');
+        // When popping back from collection, redirect straight to #about to avoid redoing hero animation
+        const scrollToAbout = () => {
+          const target = document.querySelector('#about');
+          if (target) {
+            const navOffset = 70;
+            const elementPosition = target.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - navOffset;
+            window.scrollTo({ top: offsetPosition, behavior: 'instant' });
+          }
+        };
+        requestAnimationFrame(() => {
+          scrollToAbout();
+          setTimeout(scrollToAbout, 60);
+          setTimeout(scrollToAbout, 180);
+        });
       }
     };
     window.addEventListener('popstate', handlePopState);
@@ -41,19 +56,25 @@ function App() {
     window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
-  const navigateToHome = (targetHash = null) => {
+  const navigateToHome = (targetHash = '#about') => {
     window.history.pushState({}, '', '/');
     setCurrentView('home');
     if (targetHash) {
-      setTimeout(() => {
+      const scrollToTarget = () => {
         const target = document.querySelector(targetHash);
         if (target) {
-          const navOffset = 90;
+          const navOffset = 70;
           const elementPosition = target.getBoundingClientRect().top;
           const offsetPosition = elementPosition + window.pageYOffset - navOffset;
-          window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+          window.scrollTo({ top: offsetPosition, behavior: 'instant' });
         }
-      }, 100);
+      };
+      // Jump instantly past the hero scroll canvas so the user is directly at #about
+      requestAnimationFrame(() => {
+        scrollToTarget();
+        setTimeout(scrollToTarget, 60);
+        setTimeout(scrollToTarget, 180);
+      });
     } else {
       window.scrollTo({ top: 0, behavior: 'instant' });
     }
@@ -120,7 +141,7 @@ function App() {
   if (currentView === 'collection') {
     return (
       <CollectionPage
-        onBackToHome={() => navigateToHome()}
+        onBackToHome={() => navigateToHome('#about')}
         onEnquireStyle={(style) => scrollToConsultation(style)}
       />
     );

@@ -38,18 +38,18 @@ export default function ServicesGrid({ onSelectService }) {
   const [hoveredCard, setHoveredCard] = useState(null);
 
   return (
-    <section className="w-full bg-[#110D0B] text-white pt-8 pb-14 sm:pt-10 sm:pb-16 lg:pt-12 lg:pb-20 my-6 sm:my-10 border-y border-[#1E1814]">
+    <section className="w-full bg-[#110D0B] text-white py-14 sm:py-18 lg:py-20 my-10 sm:my-16 border-y border-[#1E1814]">
       {/* Centered structured container matching the Levanto reference */}
       <div className="max-w-6xl mx-auto px-5 sm:px-8 lg:px-12">
         
         {/* Section Header matching Levanto Reference */}
-        <div className="mb-6 sm:mb-8">
+        <div className="mb-8 sm:mb-10">
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-40px' }}
             transition={{ duration: 0.4 }}
-            className="text-[11px] font-semibold tracking-[0.25em] uppercase text-[#C5A880] mb-2"
+            className="text-[11px] font-semibold tracking-[0.25em] uppercase text-[#C5A880] mb-2.5"
           >
             SERVICES
           </motion.div>

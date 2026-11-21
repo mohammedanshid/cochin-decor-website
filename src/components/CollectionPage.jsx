@@ -31,26 +31,29 @@ export default function CollectionPage({ onBackToHome, onEnquireStyle }) {
   return (
     <div className="min-h-screen bg-[#FBFBFA] text-[#111111] font-sans">
       
-      {/* Top Floating / Sticky Header with Back Button */}
-      <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-[#EAEAEA] py-3.5 sm:py-4 px-4 sm:px-8">
+      {/* Top Floating / Sticky Header with Back Arrow and Logo on the Right */}
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#EAEAEA] py-3 sm:py-3.5 px-4 sm:px-8">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
+          {/* Left: Back Arrow only */}
           <button
             onClick={onBackToHome}
-            className="inline-flex items-center space-x-2 text-xs uppercase tracking-widest font-semibold text-[#111111] hover:text-[#777777] transition-colors py-1 cursor-pointer"
+            aria-label="Back to About"
+            className="p-2 -ml-1 rounded-full text-[#111111] hover:bg-neutral-100 transition-colors cursor-pointer flex items-center justify-center group"
           >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Back to Home</span>
+            <ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6 group-hover:-translate-x-0.5 transition-transform" />
           </button>
 
-          <a href="#top" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="flex items-center">
-            <img src="/logo-black.png" alt="Cochin Decor" className="h-8 sm:h-9 w-auto object-contain" />
-          </a>
-
+          {/* Right: Cochin Decor Logo (positioned in place of previous consultation button) */}
           <button
-            onClick={() => onEnquireStyle('Full Curtain Collection')}
-            className="px-4 py-2 bg-[#111111] text-white text-[11px] font-medium tracking-wider uppercase rounded-full hover:bg-neutral-800 transition-colors cursor-pointer"
+            onClick={onBackToHome}
+            aria-label="Cochin Decor Home"
+            className="flex items-center cursor-pointer"
           >
-            Consultation
+            <img
+              src="/logo-black.png"
+              alt="Cochin Decor"
+              className="h-8 sm:h-9 w-auto object-contain"
+            />
           </button>
         </div>
       </header>
