@@ -24,26 +24,32 @@ function App() {
 
   // Handle browser back/forward buttons
   useEffect(() => {
+    if (typeof window !== 'undefined' && 'scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+
     const handlePopState = () => {
       if (window.location.pathname.startsWith('/collection')) {
         setCurrentView('collection');
       } else {
+        try {
+          sessionStorage.setItem('cochin_curtain_opened', 'true');
+        } catch {}
         setCurrentView('home');
         // When popping back from collection, redirect straight to #about to avoid redoing hero animation
         const scrollToAbout = () => {
           const target = document.querySelector('#about');
           if (target) {
             const navOffset = 70;
-            const elementPosition = target.getBoundingClientRect().top;
-            const offsetPosition = elementPosition + window.pageYOffset - navOffset;
-            window.scrollTo({ top: offsetPosition, behavior: 'instant' });
+            const targetTop = target.getBoundingClientRect().top + window.pageYOffset - navOffset;
+            window.scrollTo({ top: targetTop, behavior: 'instant' });
           }
         };
-        requestAnimationFrame(() => {
-          scrollToAbout();
-          setTimeout(scrollToAbout, 60);
-          setTimeout(scrollToAbout, 180);
-        });
+        scrollToAbout();
+        requestAnimationFrame(scrollToAbout);
+        setTimeout(scrollToAbout, 30);
+        setTimeout(scrollToAbout, 100);
+        setTimeout(scrollToAbout, 250);
       }
     };
     window.addEventListener('popstate', handlePopState);
@@ -51,12 +57,18 @@ function App() {
   }, []);
 
   const navigateToCollection = (_selectedId = null) => {
+    try {
+      sessionStorage.setItem('cochin_curtain_opened', 'true');
+    } catch {}
     window.history.pushState({}, '', '/collection');
     setCurrentView('collection');
     window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
   const navigateToHome = (targetHash = '#about') => {
+    try {
+      sessionStorage.setItem('cochin_curtain_opened', 'true');
+    } catch {}
     window.history.pushState({}, '', '/');
     setCurrentView('home');
     if (targetHash) {
@@ -64,17 +76,16 @@ function App() {
         const target = document.querySelector(targetHash);
         if (target) {
           const navOffset = 70;
-          const elementPosition = target.getBoundingClientRect().top;
-          const offsetPosition = elementPosition + window.pageYOffset - navOffset;
-          window.scrollTo({ top: offsetPosition, behavior: 'instant' });
+          const targetTop = target.getBoundingClientRect().top + window.pageYOffset - navOffset;
+          window.scrollTo({ top: targetTop, behavior: 'instant' });
         }
       };
       // Jump instantly past the hero scroll canvas so the user is directly at #about
-      requestAnimationFrame(() => {
-        scrollToTarget();
-        setTimeout(scrollToTarget, 60);
-        setTimeout(scrollToTarget, 180);
-      });
+      scrollToTarget();
+      requestAnimationFrame(scrollToTarget);
+      setTimeout(scrollToTarget, 30);
+      setTimeout(scrollToTarget, 100);
+      setTimeout(scrollToTarget, 250);
     } else {
       window.scrollTo({ top: 0, behavior: 'instant' });
     }
